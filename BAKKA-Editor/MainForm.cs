@@ -20,7 +20,6 @@ namespace BAKKA_Editor
         OperationManager opManager = new OperationManager();
 
         // Playfield
-        CircleView circleView = new(new SizeF(611, 611));
         SkCircleView skCircleView = new(new SizeF(611, 611));
 
         // Note Selection
@@ -63,15 +62,10 @@ namespace BAKKA_Editor
             InitializeComponent();
 
             // Extra Forms stuff
-            circlePanel.MouseWheel += circlePanel_MouseWheel;
+            skCirclePanel.MouseWheel += skCirclePanel_MouseWheel;
 
             // Setup graphics
             MainForm_Resize(this, new EventArgs());
-
-            // Force double buffering on circlePanel
-            Type controlType = circlePanel.GetType();
-            PropertyInfo pi = controlType.GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic);
-            pi.SetValue(circlePanel, true);
 
             // Tool Forms
             gimmickForm = new GimmickForm();
@@ -184,7 +178,7 @@ namespace BAKKA_Editor
 
         private void ForceRerender()
         {
-            circlePanel.Invalidate();
+            // circlePanel.Invalidate();
             skCirclePanel.Invalidate();
         }
 
@@ -467,95 +461,6 @@ namespace BAKKA_Editor
             SetSelectedObject(NoteType.TouchBonusFlair);
         }
 
-        private void circlePanel_MouseWheel(object? sender, MouseEventArgs e)
-        {
-            if (Control.ModifierKeys == Keys.Alt)
-            {
-                // Shift beat division by standard musical quantization
-                // TODO: Take time signature into account?
-                if (beat2Numeric.Value < 2)
-                {
-                    if (e.Delta > 0)
-                        beat2Numeric.Value = 2;
-                    return;
-                }
-                else if (beat2Numeric.Value == 2 && e.Delta < 0)
-                {
-                    beat2Numeric.Value = 1;
-                    return;
-                }
-                int low = 0;
-                int high = 1;
-                while (!(beat2Numeric.Value >= (1 << low) && beat2Numeric.Value <= (1 << high)))
-                {
-                    low++;
-                    high++;
-                }
-                if (e.Delta < 0)
-                    beat2Numeric.Value = (1 << low);
-                else
-                {
-                    if (high < 10)
-                        beat2Numeric.Value = (1 << (high + 1));
-                }
-            }
-            else if (Control.ModifierKeys == Keys.Shift)
-            {
-
-            }
-            else if (Control.ModifierKeys == Keys.Control)
-            {
-
-            }
-            else
-            {
-                valueTriggerEvent = EventSource.MouseWheel;
-                if (e.Delta > 0)
-                    beat1Numeric.Value++;
-                else
-                    beat1Numeric.Value--;
-
-                ForceRerender();
-            }
-        }
-
-        private void circlePanel_Paint(object sender, PaintEventArgs e)
-        {
-            // Draw background
-            circleView.DrawBackground(circlePanel.Width, circlePanel.Height, this.BackColor);
-
-            // Draw masks
-            circleView.DrawMasks(chart);
-
-            // Draw base and measure circle.
-            circleView.DrawCircle();
-
-            // Draw degree lines
-            circleView.DrawDegreeLines();
-
-            // Draw holds
-            circleView.DrawHolds(chart, highlightViewedNoteToolStripMenuItem.Checked, selectedNoteIndex);
-
-            // Draw notes
-            circleView.DrawNotes(chart, highlightViewedNoteToolStripMenuItem.Checked, selectedNoteIndex);
-
-            // Determine if cursor should be showing
-            bool showCursor = showCursorToolStripMenuItem.Checked || circleView.mouseDownPos != -1;
-            if (currentSong != null && !currentSong.Paused)
-            {
-                showCursor = showCursorDuringPlaybackToolStripMenuItem.Checked;
-            }
-
-            // Draw cursor
-            if (showCursor)
-            {
-                circleView.DrawCursor(currentNoteType, (float)positionNumeric.Value, (float)sizeNumeric.Value);
-            }
-
-            // Everything has been drawn, render it.
-            circleView.Render(e.Graphics);
-        }
-
         private void measureNumeric_ValueChanged(object sender, EventArgs e)
         {
             updateTime();
@@ -596,21 +501,20 @@ namespace BAKKA_Editor
         {
             if (currentSong == null || (currentSong != null && currentSong.Paused))
             {
-                circleView.CurrentMeasure = (float)measureNumeric.Value + ((float)beat1Numeric.Value / (float)beat2Numeric.Value);
                 skCircleView.CurrentMeasure = (float)measureNumeric.Value + ((float)beat1Numeric.Value / (float)beat2Numeric.Value);
                 ForceRerender();
             }
 
             if (currentNoteType == NoteType.HoldJoint || currentNoteType == NoteType.HoldEnd)
             {
-                if (lastNote.BeatInfo.MeasureDecimal >= circleView.CurrentMeasure)
+                if (lastNote.BeatInfo.MeasureDecimal >= skCircleView.CurrentMeasure)
                     insertButton.Enabled = false;
                 else
                     insertButton.Enabled = true;
             }
             else if (endOfChartNote != null)
             {
-                if (endOfChartNote.BeatInfo.MeasureDecimal <= circleView.CurrentMeasure)
+                if (endOfChartNote.BeatInfo.MeasureDecimal <= skCircleView.CurrentMeasure)
                     insertButton.Enabled = false;
                 else
                     insertButton.Enabled = true;
@@ -1003,13 +907,12 @@ namespace BAKKA_Editor
             {
                 measureNumeric.Value = info.Measure;
                 beat1Numeric.Value = (int)((float)info.Beat / 1920.0f * (float)beat2Numeric.Value);
-                circleView.CurrentMeasure = info.MeasureDecimal;
                 skCircleView.CurrentMeasure = info.MeasureDecimal;
 
                 // TODO Fix hi-speed (it needs to be able to display multiple hi-speeds in the circle view at once)
                 //// Change hi-speed, if applicable
                 //var hispeed = chart.Gimmicks.Where(x => x.Measure <= info.Measure && x.GimmickType == GimmickType.HiSpeedChange).LastOrDefault();
-                //if (hispeed != null && hispeed.HiSpeed != circleView.TotalMeasureShowNotes)
+                //if (hispeed != null && hispeed.HiSpeed != skCircleView.TotalMeasureShowNotes)
                 //{
                 //    visualHispeedNumeric.Value = (decimal)hispeed.HiSpeed;
                 //}
@@ -1031,88 +934,14 @@ namespace BAKKA_Editor
                 valueTriggerEvent = EventSource.TrackBar;
                 measureNumeric.Value = info.Measure;
                 beat1Numeric.Value = (int)((float)info.Beat / 1920.0f * (float)beat2Numeric.Value);
-                circleView.CurrentMeasure = info.MeasureDecimal;
                 skCircleView.CurrentMeasure = info.MeasureDecimal;
             }
             ForceRerender();
             valueTriggerEvent = EventSource.None;
         }
 
-        private void circlePanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button != MouseButtons.Left)
-            {
-                return;
-            }
-
-            // X and Y are relative to the upper left of the panel
-            float xCen = e.X - (circlePanel.Width / 2);
-            float yCen = -(e.Y - (circlePanel.Height / 2));
-            // Update the location of mouse click inside the circle
-            circleView.UpdateMouseDown(xCen, yCen, e.Location);
-            positionNumeric.Value = circleView.mouseDownPos;
-            ForceRerender();
-        }
-
-        private void circlePanel_MouseUp(object sender, MouseEventArgs e)
-        {
-            // Mouse down position wasn't within the window or wasn't a left click, do nothing.
-            if (e.Button != MouseButtons.Left || circleView.mouseDownPos <= -1)
-            {
-                return;
-            }
-
-            var dist = Utils.GetDist(e.Location, circleView.mouseDownPt);
-            if (dist > 5.0f)
-                InsertObject();
-            circleView.UpdateMouseUp();
-            ForceRerender();
-        }
-
-        private void circlePanel_MouseMove(object sender, MouseEventArgs e)
-        {
-            // Mouse down position wasn't within the window or wasn't a left click, do nothing.
-            if (e.Button != MouseButtons.Left || circleView.mouseDownPos <= -1)
-            {
-                return;
-            }
-
-            {
-                // X and Y are relative to the upper left of the panel
-                float xCen = e.X - (circlePanel.Width / 2);
-                float yCen = -(e.Y - (circlePanel.Height / 2));
-                // Update the location of mouse click inside the circle.
-                int theta = circleView.UpdateMouseMove(xCen, yCen);
-                // Left click will alter the note width and possibly position depending on which direction we move
-                if (theta == circleView.mouseDownPos)
-                {
-                    positionNumeric.Value = circleView.mouseDownPos;
-                    sizeNumeric.Value = 1;
-                }
-                else if ((theta > circleView.mouseDownPos || circleView.rolloverPos) && !circleView.rolloverNeg)
-                {
-                    positionNumeric.Value = circleView.mouseDownPos;
-                    if (circleView.rolloverPos)
-                        sizeNumeric.Value = (int)Math.Min(theta + 60 - circleView.mouseDownPos + 1, 60);
-                    else
-                        sizeNumeric.Value = theta - circleView.mouseDownPos + 1;
-                }
-                else if (theta < circleView.mouseDownPos || circleView.rolloverNeg)
-                {
-                    positionNumeric.Value = theta;
-                    if (circleView.rolloverNeg)
-                        sizeNumeric.Value = (int)Math.Min(circleView.mouseDownPos + 60 - theta + 1, 60);
-                    else
-                        sizeNumeric.Value = circleView.mouseDownPos - theta + 1;
-                }
-            }
-
-            ForceRerender();
-        }
-
         private void visualHispeedNumeric_ValueChanged(object sender, EventArgs e)
         {
-            circleView.TotalMeasureShowNotes = (float)visualHispeedNumeric.Value;
             skCircleView.TotalMeasureShowNotes = (float)visualHispeedNumeric.Value;
             ForceRerender();
         }
@@ -1972,24 +1801,16 @@ namespace BAKKA_Editor
             var zoneHeight = playbackGroupBox.Top - gimmickTypeGroupBox.Top - 6;
             if (zoneWidth > zoneHeight)
             {
-                circlePanel.Width = zoneHeight;
-                circlePanel.Height = zoneHeight;
                 skCirclePanel.Width = zoneHeight;
                 skCirclePanel.Height = zoneHeight;
             }
             else
             {
-                circlePanel.Width = zoneWidth;
-                circlePanel.Height = zoneWidth;
                 skCirclePanel.Width = zoneWidth;
                 skCirclePanel.Height = zoneWidth;
             }
-            int paddingLeft = (zoneWidth - circlePanel.Width) / 2;
-            circlePanel.Left = (gimmickTypeGroupBox.Right + 6 + paddingLeft) + circlePanel.Width + 6 + paddingLeft;
-            circleView.SetBufferedGraphicsContext(circlePanel.Width, circlePanel.Height, circlePanel.CreateGraphics());
-            circleView.Update(circlePanel.Size);
 
-            // ?
+            int paddingLeft = (zoneWidth - skCirclePanel.Width) / 2;
             skCirclePanel.Left = gimmickTypeGroupBox.Right + 6 + paddingLeft;
             skCircleView.Update(skCirclePanel.Size);
             ForceRerender();
@@ -2046,7 +1867,7 @@ namespace BAKKA_Editor
             labelSpeed.Text = $"Speed (x{currentSong.PlaybackSpeed:0.00})";
         }
 
-        private void skCirclePanel_PaintSurface(object sender, SkiaSharp.Views.Desktop.SKPaintSurfaceEventArgs e)
+        private void skCirclePanel_PaintSurface(object sender, SKPaintGLSurfaceEventArgs e)
         {
             skCircleView.SetCanvas(e.Surface.Canvas);
 
@@ -2078,6 +1899,129 @@ namespace BAKKA_Editor
             if (showCursor)
             {
                 skCircleView.DrawCursor(currentNoteType, (float)positionNumeric.Value, (float)sizeNumeric.Value);
+            }
+        }
+
+        private void skCirclePanel_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left)
+            {
+                return;
+            }
+
+            // X and Y are relative to the upper left of the panel
+            float xCen = e.X - (skCirclePanel.Width / 2);
+            float yCen = -(e.Y - (skCirclePanel.Height / 2));
+            // Update the location of mouse click inside the circle
+            skCircleView.UpdateMouseDown(xCen, yCen, e.Location);
+            positionNumeric.Value = skCircleView.mouseDownPos;
+            ForceRerender();
+        }
+
+        private void skCirclePanel_MouseUp(object sender, MouseEventArgs e)
+        {
+            // Mouse down position wasn't within the window or wasn't a left click, do nothing.
+            if (e.Button != MouseButtons.Left || skCircleView.mouseDownPos <= -1)
+            {
+                return;
+            }
+
+            var dist = Utils.GetDist(e.Location, skCircleView.mouseDownPt);
+            if (dist > 5.0f)
+                InsertObject();
+            skCircleView.UpdateMouseUp();
+            ForceRerender();
+        }
+
+        private void skCirclePanel_MouseMove(object sender, MouseEventArgs e)
+        {
+            // Mouse down position wasn't within the window or wasn't a left click, do nothing.
+            if (e.Button != MouseButtons.Left || skCircleView.mouseDownPos <= -1)
+            {
+                return;
+            }
+
+            {
+                // X and Y are relative to the upper left of the panel
+                float xCen = e.X - (skCirclePanel.Width / 2);
+                float yCen = -(e.Y - (skCirclePanel.Height / 2));
+                // Update the location of mouse click inside the circle.
+                int theta = skCircleView.UpdateMouseMove(xCen, yCen);
+                // Left click will alter the note width and possibly position depending on which direction we move
+                if (theta == skCircleView.mouseDownPos)
+                {
+                    positionNumeric.Value = skCircleView.mouseDownPos;
+                    sizeNumeric.Value = 1;
+                }
+                else if ((theta > skCircleView.mouseDownPos || skCircleView.rolloverPos) && !skCircleView.rolloverNeg)
+                {
+                    positionNumeric.Value = skCircleView.mouseDownPos;
+                    if (skCircleView.rolloverPos)
+                        sizeNumeric.Value = (int)Math.Min(theta + 60 - skCircleView.mouseDownPos + 1, 60);
+                    else
+                        sizeNumeric.Value = theta - skCircleView.mouseDownPos + 1;
+                }
+                else if (theta < skCircleView.mouseDownPos || skCircleView.rolloverNeg)
+                {
+                    positionNumeric.Value = theta;
+                    if (skCircleView.rolloverNeg)
+                        sizeNumeric.Value = (int)Math.Min(skCircleView.mouseDownPos + 60 - theta + 1, 60);
+                    else
+                        sizeNumeric.Value = skCircleView.mouseDownPos - theta + 1;
+                }
+            }
+
+            ForceRerender();
+        }
+        private void skCirclePanel_MouseWheel(object? sender, MouseEventArgs e)
+        {
+            if (Control.ModifierKeys == Keys.Alt)
+            {
+                // Shift beat division by standard musical quantization
+                // TODO: Take time signature into account?
+                if (beat2Numeric.Value < 2)
+                {
+                    if (e.Delta > 0)
+                        beat2Numeric.Value = 2;
+                    return;
+                }
+                else if (beat2Numeric.Value == 2 && e.Delta < 0)
+                {
+                    beat2Numeric.Value = 1;
+                    return;
+                }
+                int low = 0;
+                int high = 1;
+                while (!(beat2Numeric.Value >= (1 << low) && beat2Numeric.Value <= (1 << high)))
+                {
+                    low++;
+                    high++;
+                }
+                if (e.Delta < 0)
+                    beat2Numeric.Value = (1 << low);
+                else
+                {
+                    if (high < 10)
+                        beat2Numeric.Value = (1 << (high + 1));
+                }
+            }
+            else if (Control.ModifierKeys == Keys.Shift)
+            {
+
+            }
+            else if (Control.ModifierKeys == Keys.Control)
+            {
+
+            }
+            else
+            {
+                valueTriggerEvent = EventSource.MouseWheel;
+                if (e.Delta > 0)
+                    beat1Numeric.Value++;
+                else
+                    beat1Numeric.Value--;
+
+                ForceRerender();
             }
         }
     }
