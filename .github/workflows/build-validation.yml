@@ -10,7 +10,7 @@ on:
         
 
 env:
-    DOTNET_VERSION: '6.x'
+    DOTNET_VERSION: '7.x'
 
 jobs:
     build:
