@@ -4,6 +4,7 @@ using IrrKlang;
 using BAKKA_Editor.Operations;
 using Tomlyn;
 using System.Security.Cryptography.X509Certificates;
+using SkiaSharp.Views.Desktop;
 
 namespace BAKKA_Editor
 {
@@ -19,7 +20,8 @@ namespace BAKKA_Editor
         OperationManager opManager = new OperationManager();
 
         // Playfield
-        CircleView circleView = new CircleView(new SizeF(611, 611));
+        CircleView circleView = new(new SizeF(611, 611));
+        SkCircleView skCircleView = new(new SizeF(611, 611));
 
         // Note Selection
         NoteType currentNoteType = NoteType.TouchNoBonus;
@@ -102,7 +104,7 @@ namespace BAKKA_Editor
                     selectedGimmickIndex = 0;
                 UpdateGimmickLabels();
                 SetText();
-                circlePanel.Invalidate();
+                ForceRerender();
             };
 
             // Program info
@@ -180,6 +182,12 @@ namespace BAKKA_Editor
             }
         }
 
+        private void ForceRerender()
+        {
+            circlePanel.Invalidate();
+            skCirclePanel.Invalidate();
+        }
+
         private void SetText()
         {
             string save = chart.IsSaved ? "" : "*";
@@ -223,7 +231,7 @@ namespace BAKKA_Editor
             UpdateGimmickLabels(-1);
             SetText();
             opManager.Clear();
-            circlePanel.Invalidate();
+            ForceRerender();
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -269,7 +277,7 @@ namespace BAKKA_Editor
                 isNewFile = false;
                 SetText();
             }
-            circlePanel.Invalidate();
+            ForceRerender();
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -430,7 +438,7 @@ namespace BAKKA_Editor
                     updateLabel("None Selected");
                     break;
             }
-            circlePanel.Invalidate();
+            ForceRerender();
         }
 
         private void SetSelectedObject(GimmickType gimmick)
@@ -507,7 +515,7 @@ namespace BAKKA_Editor
                 else
                     beat1Numeric.Value--;
 
-                circlePanel.Invalidate();
+                ForceRerender();
             }
         }
 
@@ -589,7 +597,8 @@ namespace BAKKA_Editor
             if (currentSong == null || (currentSong != null && currentSong.Paused))
             {
                 circleView.CurrentMeasure = (float)measureNumeric.Value + ((float)beat1Numeric.Value / (float)beat2Numeric.Value);
-                circlePanel.Invalidate();
+                skCircleView.CurrentMeasure = (float)measureNumeric.Value + ((float)beat1Numeric.Value / (float)beat2Numeric.Value);
+                ForceRerender();
             }
 
             if (currentNoteType == NoteType.HoldJoint || currentNoteType == NoteType.HoldEnd)
@@ -619,25 +628,25 @@ namespace BAKKA_Editor
         private void positionNumeric_ValueChanged(object sender, EventArgs e)
         {
             positionTrackBar.Value = (int)positionNumeric.Value;
-            circlePanel.Invalidate();
+            ForceRerender();
         }
 
         private void positionTrackBar_ValueChanged(object sender, EventArgs e)
         {
             positionNumeric.Value = positionTrackBar.Value;
-            circlePanel.Invalidate();
+            ForceRerender();
         }
 
         private void sizeNumeric_ValueChanged(object sender, EventArgs e)
         {
             sizeTrackBar.Value = (int)sizeNumeric.Value;
-            circlePanel.Invalidate();
+            ForceRerender();
         }
 
         private void sizeTrackBar_ValueChanged(object sender, EventArgs e)
         {
             sizeNumeric.Value = sizeTrackBar.Value;
-            circlePanel.Invalidate();
+            ForceRerender();
         }
 
         private void tapButton_Click(object sender, EventArgs e)
@@ -995,6 +1004,7 @@ namespace BAKKA_Editor
                 measureNumeric.Value = info.Measure;
                 beat1Numeric.Value = (int)((float)info.Beat / 1920.0f * (float)beat2Numeric.Value);
                 circleView.CurrentMeasure = info.MeasureDecimal;
+                skCircleView.CurrentMeasure = info.MeasureDecimal;
 
                 // TODO Fix hi-speed (it needs to be able to display multiple hi-speeds in the circle view at once)
                 //// Change hi-speed, if applicable
@@ -1004,7 +1014,7 @@ namespace BAKKA_Editor
                 //    visualHispeedNumeric.Value = (decimal)hispeed.HiSpeed;
                 //}
             }
-            circlePanel.Invalidate();
+            ForceRerender();
         }
 
         private void songTrackBar_ValueChanged(object sender, EventArgs e)
@@ -1022,8 +1032,9 @@ namespace BAKKA_Editor
                 measureNumeric.Value = info.Measure;
                 beat1Numeric.Value = (int)((float)info.Beat / 1920.0f * (float)beat2Numeric.Value);
                 circleView.CurrentMeasure = info.MeasureDecimal;
+                skCircleView.CurrentMeasure = info.MeasureDecimal;
             }
-            circlePanel.Invalidate();
+            ForceRerender();
             valueTriggerEvent = EventSource.None;
         }
 
@@ -1040,7 +1051,7 @@ namespace BAKKA_Editor
             // Update the location of mouse click inside the circle
             circleView.UpdateMouseDown(xCen, yCen, e.Location);
             positionNumeric.Value = circleView.mouseDownPos;
-            circlePanel.Invalidate();
+            ForceRerender();
         }
 
         private void circlePanel_MouseUp(object sender, MouseEventArgs e)
@@ -1055,7 +1066,7 @@ namespace BAKKA_Editor
             if (dist > 5.0f)
                 InsertObject();
             circleView.UpdateMouseUp();
-            circlePanel.Invalidate();
+            ForceRerender();
         }
 
         private void circlePanel_MouseMove(object sender, MouseEventArgs e)
@@ -1066,41 +1077,44 @@ namespace BAKKA_Editor
                 return;
             }
 
-            // X and Y are relative to the upper left of the panel
-            float xCen = e.X - (circlePanel.Width / 2);
-            float yCen = -(e.Y - (circlePanel.Height / 2));
-            // Update the location of mouse click inside the circle.
-            int theta = circleView.UpdateMouseMove(xCen, yCen);
-            // Left click will alter the note width and possibly position depending on which direction we move
-            if (theta == circleView.mouseDownPos)
             {
-                positionNumeric.Value = circleView.mouseDownPos;
-                sizeNumeric.Value = 1;
-            }
-            else if ((theta > circleView.mouseDownPos || circleView.rolloverPos) && !circleView.rolloverNeg)
-            {
-                positionNumeric.Value = circleView.mouseDownPos;
-                if (circleView.rolloverPos)
-                    sizeNumeric.Value = (int)Math.Min(theta + 60 - circleView.mouseDownPos + 1, 60);
-                else
-                    sizeNumeric.Value = theta - circleView.mouseDownPos + 1;
-            }
-            else if (theta < circleView.mouseDownPos || circleView.rolloverNeg)
-            {
-                positionNumeric.Value = theta;
-                if (circleView.rolloverNeg)
-                    sizeNumeric.Value = (int)Math.Min(circleView.mouseDownPos + 60 - theta + 1, 60);
-                else
-                    sizeNumeric.Value = circleView.mouseDownPos - theta + 1;
+                // X and Y are relative to the upper left of the panel
+                float xCen = e.X - (circlePanel.Width / 2);
+                float yCen = -(e.Y - (circlePanel.Height / 2));
+                // Update the location of mouse click inside the circle.
+                int theta = circleView.UpdateMouseMove(xCen, yCen);
+                // Left click will alter the note width and possibly position depending on which direction we move
+                if (theta == circleView.mouseDownPos)
+                {
+                    positionNumeric.Value = circleView.mouseDownPos;
+                    sizeNumeric.Value = 1;
+                }
+                else if ((theta > circleView.mouseDownPos || circleView.rolloverPos) && !circleView.rolloverNeg)
+                {
+                    positionNumeric.Value = circleView.mouseDownPos;
+                    if (circleView.rolloverPos)
+                        sizeNumeric.Value = (int)Math.Min(theta + 60 - circleView.mouseDownPos + 1, 60);
+                    else
+                        sizeNumeric.Value = theta - circleView.mouseDownPos + 1;
+                }
+                else if (theta < circleView.mouseDownPos || circleView.rolloverNeg)
+                {
+                    positionNumeric.Value = theta;
+                    if (circleView.rolloverNeg)
+                        sizeNumeric.Value = (int)Math.Min(circleView.mouseDownPos + 60 - theta + 1, 60);
+                    else
+                        sizeNumeric.Value = circleView.mouseDownPos - theta + 1;
+                }
             }
 
-            circlePanel.Invalidate();
+            ForceRerender();
         }
 
         private void visualHispeedNumeric_ValueChanged(object sender, EventArgs e)
         {
             circleView.TotalMeasureShowNotes = (float)visualHispeedNumeric.Value;
-            circlePanel.Invalidate();
+            skCircleView.TotalMeasureShowNotes = (float)visualHispeedNumeric.Value;
+            ForceRerender();
         }
 
         private void insertButton_Click(object sender, EventArgs e)
@@ -1361,7 +1375,7 @@ namespace BAKKA_Editor
 
         private void showCursorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            circlePanel.Invalidate();
+            ForceRerender();
         }
 
         private void gimmickPrevButton_Click(object sender, EventArgs e)
@@ -1626,7 +1640,7 @@ namespace BAKKA_Editor
             else
                 selectedNoteIndex -= 1;
 
-            circlePanel.Invalidate();
+            ForceRerender();
             UpdateNoteLabels();
         }
 
@@ -1640,7 +1654,7 @@ namespace BAKKA_Editor
             else
                 selectedNoteIndex += 1;
 
-            circlePanel.Invalidate();
+            ForceRerender();
             UpdateNoteLabels();
         }
 
@@ -1663,7 +1677,7 @@ namespace BAKKA_Editor
                     selectedNoteIndex = chart.Notes.IndexOf(note);
                 }
             }
-            circlePanel.Invalidate();
+            ForceRerender();
             UpdateNoteLabels();
         }
 
@@ -1686,7 +1700,7 @@ namespace BAKKA_Editor
                     selectedNoteIndex = chart.Notes.IndexOf(note);
                 }
             }
-            circlePanel.Invalidate();
+            ForceRerender();
             UpdateNoteLabels();
         }
 
@@ -1706,7 +1720,7 @@ namespace BAKKA_Editor
                 Size = (int)sizeNumeric.Value
             };
             opManager.InvokeAndPush(new EditNote(currentNote, newNote));
-            circlePanel.Invalidate();
+            ForceRerender();
             UpdateNoteLabels();
         }
 
@@ -1722,7 +1736,7 @@ namespace BAKKA_Editor
             if (selectedNoteIndex == delIndex)
             {
                 UpdateNoteLabels(delIndex - 1);
-                circlePanel.Invalidate();
+                ForceRerender();
             }
         }
         private void playbackVolumeChange(bool increase)
@@ -1949,7 +1963,7 @@ namespace BAKKA_Editor
             }
             /* Volume is represented as a float from 0-1. */
             currentSong.Volume = (float) trackBarVolume.Value / (float) trackBarVolume.Maximum;
-            circlePanel.Invalidate();
+            ForceRerender();
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -1960,17 +1974,25 @@ namespace BAKKA_Editor
             {
                 circlePanel.Width = zoneHeight;
                 circlePanel.Height = zoneHeight;
+                skCirclePanel.Width = zoneHeight;
+                skCirclePanel.Height = zoneHeight;
             }
             else
             {
                 circlePanel.Width = zoneWidth;
                 circlePanel.Height = zoneWidth;
+                skCirclePanel.Width = zoneWidth;
+                skCirclePanel.Height = zoneWidth;
             }
             int paddingLeft = (zoneWidth - circlePanel.Width) / 2;
-            circlePanel.Left = gimmickTypeGroupBox.Right + 6 + paddingLeft;
+            circlePanel.Left = (gimmickTypeGroupBox.Right + 6 + paddingLeft) + circlePanel.Width + 6 + paddingLeft;
             circleView.SetBufferedGraphicsContext(circlePanel.Width, circlePanel.Height, circlePanel.CreateGraphics());
             circleView.Update(circlePanel.Size);
-            circlePanel.Invalidate();
+
+            // ?
+            skCirclePanel.Left = gimmickTypeGroupBox.Right + 6 + paddingLeft;
+            skCircleView.Update(skCirclePanel.Size);
+            ForceRerender();
         }
 
         private void autoSaveTimer_Tick(object sender, EventArgs e)
@@ -2022,6 +2044,41 @@ namespace BAKKA_Editor
             }
             currentSong.PlaybackSpeed = (trackBarSpeed.Value / (float)trackBarSpeed.Maximum);
             labelSpeed.Text = $"Speed (x{currentSong.PlaybackSpeed:0.00})";
+        }
+
+        private void skCirclePanel_PaintSurface(object sender, SkiaSharp.Views.Desktop.SKPaintSurfaceEventArgs e)
+        {
+            skCircleView.SetCanvas(e.Surface.Canvas);
+
+            e.Surface.Canvas.Clear(BackColor.ToSKColor());
+
+            // Draw masks
+            skCircleView.DrawMasks(chart);
+
+            // Draw base and measure circle.
+            skCircleView.DrawCircle();
+
+            // Draw degree lines
+            skCircleView.DrawDegreeLines();
+
+            // Draw holds
+            skCircleView.DrawHolds(chart, highlightViewedNoteToolStripMenuItem.Checked, selectedNoteIndex);
+
+            // Draw notes
+            skCircleView.DrawNotes(chart, highlightViewedNoteToolStripMenuItem.Checked, selectedNoteIndex);
+
+            // Determine if cursor should be showing
+            bool showCursor = showCursorToolStripMenuItem.Checked || skCircleView.mouseDownPos != -1;
+            if (currentSong != null && !currentSong.Paused)
+            {
+                showCursor = showCursorDuringPlaybackToolStripMenuItem.Checked;
+            }
+
+            // Draw cursor
+            if (showCursor)
+            {
+                skCircleView.DrawCursor(currentNoteType, (float)positionNumeric.Value, (float)sizeNumeric.Value);
+            }
         }
     }
 }

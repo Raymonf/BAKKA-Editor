@@ -1,7 +1,8 @@
 {
   "profiles": {
     "BAKKA-Editor": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "nativeDebugging": false
     }
   }
 }

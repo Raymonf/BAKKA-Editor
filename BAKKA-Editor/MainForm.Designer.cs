@@ -140,6 +140,7 @@
             this.noteNextButton = new System.Windows.Forms.Button();
             this.notePrevButton = new System.Windows.Forms.Button();
             this.autoSaveTimer = new System.Windows.Forms.Timer(this.components);
+            this.skCirclePanel = new SkiaSharp.Views.Desktop.SKControl();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.beat2Numeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.beat1Numeric)).BeginInit();
@@ -177,7 +178,7 @@
             // 
             this.circlePanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.circlePanel.Location = new System.Drawing.Point(257, 40);
+            this.circlePanel.Location = new System.Drawing.Point(581, 26);
             this.circlePanel.Name = "circlePanel";
             this.circlePanel.Size = new System.Drawing.Size(611, 524);
             this.circlePanel.TabIndex = 2;
@@ -279,7 +280,7 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(6, 111);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(55, 15);
+            this.label3.Size = new System.Drawing.Size(59, 15);
             this.label3.TabIndex = 6;
             this.label3.Text = "Measure:";
             // 
@@ -325,7 +326,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 63);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(30, 15);
+            this.label2.Size = new System.Drawing.Size(33, 15);
             this.label2.TabIndex = 3;
             this.label2.Text = "Size:";
             // 
@@ -359,7 +360,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 19);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 15);
+            this.label1.Size = new System.Drawing.Size(55, 15);
             this.label1.TabIndex = 0;
             this.label1.Text = "Position:";
             // 
@@ -389,7 +390,7 @@
             this.flairRadio.AutoSize = true;
             this.flairRadio.Location = new System.Drawing.Point(6, 329);
             this.flairRadio.Name = "flairRadio";
-            this.flairRadio.Size = new System.Drawing.Size(94, 19);
+            this.flairRadio.Size = new System.Drawing.Size(99, 19);
             this.flairRadio.TabIndex = 16;
             this.flairRadio.Text = "R Note (Flair)";
             this.flairRadio.UseVisualStyleBackColor = true;
@@ -400,7 +401,7 @@
             this.bonusRadio.AutoSize = true;
             this.bonusRadio.Location = new System.Drawing.Point(6, 304);
             this.bonusRadio.Name = "bonusRadio";
-            this.bonusRadio.Size = new System.Drawing.Size(79, 19);
+            this.bonusRadio.Size = new System.Drawing.Size(82, 19);
             this.bonusRadio.TabIndex = 15;
             this.bonusRadio.Text = "Bonus Get";
             this.bonusRadio.UseVisualStyleBackColor = true;
@@ -412,7 +413,7 @@
             this.noBonusRadio.Checked = true;
             this.noBonusRadio.Location = new System.Drawing.Point(6, 279);
             this.noBonusRadio.Name = "noBonusRadio";
-            this.noBonusRadio.Size = new System.Drawing.Size(77, 19);
+            this.noBonusRadio.Size = new System.Drawing.Size(80, 19);
             this.noBonusRadio.TabIndex = 14;
             this.noBonusRadio.TabStop = true;
             this.noBonusRadio.Text = "No Bonus";
@@ -424,7 +425,7 @@
             this.endHoldCheck.AutoSize = true;
             this.endHoldCheck.Location = new System.Drawing.Point(6, 254);
             this.endHoldCheck.Name = "endHoldCheck";
-            this.endHoldCheck.Size = new System.Drawing.Size(75, 19);
+            this.endHoldCheck.Size = new System.Drawing.Size(79, 19);
             this.endHoldCheck.TabIndex = 13;
             this.endHoldCheck.Text = "End Hold";
             this.endHoldCheck.UseVisualStyleBackColor = true;
@@ -544,7 +545,7 @@
             this.removeMaskRadio.AutoSize = true;
             this.removeMaskRadio.Location = new System.Drawing.Point(6, 222);
             this.removeMaskRadio.Name = "removeMaskRadio";
-            this.removeMaskRadio.Size = new System.Drawing.Size(99, 19);
+            this.removeMaskRadio.Size = new System.Drawing.Size(105, 19);
             this.removeMaskRadio.TabIndex = 18;
             this.removeMaskRadio.Text = "Remove Mask";
             this.removeMaskRadio.UseVisualStyleBackColor = true;
@@ -566,7 +567,7 @@
             this.addMaskRadio.Checked = true;
             this.addMaskRadio.Location = new System.Drawing.Point(6, 197);
             this.addMaskRadio.Name = "addMaskRadio";
-            this.addMaskRadio.Size = new System.Drawing.Size(78, 19);
+            this.addMaskRadio.Size = new System.Drawing.Size(82, 19);
             this.addMaskRadio.TabIndex = 17;
             this.addMaskRadio.TabStop = true;
             this.addMaskRadio.Text = "Add Mask";
@@ -640,7 +641,7 @@
             this.centerMaskRadio.AutoSize = true;
             this.centerMaskRadio.Location = new System.Drawing.Point(6, 72);
             this.centerMaskRadio.Name = "centerMaskRadio";
-            this.centerMaskRadio.Size = new System.Drawing.Size(91, 19);
+            this.centerMaskRadio.Size = new System.Drawing.Size(94, 19);
             this.centerMaskRadio.TabIndex = 19;
             this.centerMaskRadio.Text = "From Center";
             this.centerMaskRadio.UseVisualStyleBackColor = true;
@@ -652,7 +653,7 @@
             this.clockwiseMaskRadio.Checked = true;
             this.clockwiseMaskRadio.Location = new System.Drawing.Point(6, 22);
             this.clockwiseMaskRadio.Name = "clockwiseMaskRadio";
-            this.clockwiseMaskRadio.Size = new System.Drawing.Size(78, 19);
+            this.clockwiseMaskRadio.Size = new System.Drawing.Size(80, 19);
             this.clockwiseMaskRadio.TabIndex = 17;
             this.clockwiseMaskRadio.TabStop = true;
             this.clockwiseMaskRadio.Text = "Clockwise";
@@ -664,7 +665,7 @@
             this.cClockwiseMaskRadio.AutoSize = true;
             this.cClockwiseMaskRadio.Location = new System.Drawing.Point(6, 47);
             this.cClockwiseMaskRadio.Name = "cClockwiseMaskRadio";
-            this.cClockwiseMaskRadio.Size = new System.Drawing.Size(91, 19);
+            this.cClockwiseMaskRadio.Size = new System.Drawing.Size(93, 19);
             this.cClockwiseMaskRadio.TabIndex = 18;
             this.cClockwiseMaskRadio.Text = "C-Clockwise";
             this.cClockwiseMaskRadio.UseVisualStyleBackColor = true;
@@ -715,7 +716,7 @@
             this.songFileLabel.AutoSize = true;
             this.songFileLabel.Location = new System.Drawing.Point(98, 81);
             this.songFileLabel.Name = "songFileLabel";
-            this.songFileLabel.Size = new System.Drawing.Size(134, 15);
+            this.songFileLabel.Size = new System.Drawing.Size(142, 15);
             this.songFileLabel.TabIndex = 33;
             this.songFileLabel.Text = "Select File (*.ogg, *.wav)";
             // 
@@ -723,10 +724,10 @@
             // 
             this.labelSpeed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.labelSpeed.AutoSize = true;
-            this.labelSpeed.Location = new System.Drawing.Point(311, 51);
+            this.labelSpeed.Location = new System.Drawing.Point(-122, 51);
             this.labelSpeed.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelSpeed.Name = "labelSpeed";
-            this.labelSpeed.Size = new System.Drawing.Size(77, 15);
+            this.labelSpeed.Size = new System.Drawing.Size(85, 15);
             this.labelSpeed.TabIndex = 36;
             this.labelSpeed.Text = "Speed (x1.00)";
             // 
@@ -734,7 +735,7 @@
             // 
             this.trackBarSpeed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.trackBarSpeed.LargeChange = 1;
-            this.trackBarSpeed.Location = new System.Drawing.Point(392, 52);
+            this.trackBarSpeed.Location = new System.Drawing.Point(-41, 52);
             this.trackBarSpeed.Margin = new System.Windows.Forms.Padding(2);
             this.trackBarSpeed.Maximum = 4;
             this.trackBarSpeed.Minimum = 1;
@@ -747,7 +748,7 @@
             // trackBarVolume
             // 
             this.trackBarVolume.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackBarVolume.Location = new System.Drawing.Point(588, 51);
+            this.trackBarVolume.Location = new System.Drawing.Point(155, 51);
             this.trackBarVolume.Margin = new System.Windows.Forms.Padding(2);
             this.trackBarVolume.Maximum = 100;
             this.trackBarVolume.Name = "trackBarVolume";
@@ -762,10 +763,10 @@
             // 
             this.labelVolume.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.labelVolume.AutoSize = true;
-            this.labelVolume.Location = new System.Drawing.Point(537, 51);
+            this.labelVolume.Location = new System.Drawing.Point(104, 51);
             this.labelVolume.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelVolume.Name = "labelVolume";
-            this.labelVolume.Size = new System.Drawing.Size(47, 15);
+            this.labelVolume.Size = new System.Drawing.Size(51, 15);
             this.labelVolume.TabIndex = 0;
             this.labelVolume.Text = "Volume";
             // 
@@ -785,7 +786,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.songTrackBar.Location = new System.Drawing.Point(98, 22);
             this.songTrackBar.Name = "songTrackBar";
-            this.songTrackBar.Size = new System.Drawing.Size(627, 45);
+            this.songTrackBar.Size = new System.Drawing.Size(194, 45);
             this.songTrackBar.TabIndex = 2;
             this.songTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
             this.songTrackBar.ValueChanged += new System.EventHandler(this.songTrackBar_ValueChanged);
@@ -837,7 +838,7 @@
             this.label21.AutoSize = true;
             this.label21.Location = new System.Drawing.Point(6, 19);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(59, 15);
+            this.label21.Size = new System.Drawing.Size(64, 15);
             this.label21.TabIndex = 11;
             this.label21.Text = "Hi-Speed:";
             // 
@@ -970,13 +971,14 @@
             this.highlightViewedNoteToolStripMenuItem.Name = "highlightViewedNoteToolStripMenuItem";
             this.highlightViewedNoteToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
             this.highlightViewedNoteToolStripMenuItem.Text = "Highlight Viewed Note";
+            // 
             // selectLastInsertedNoteToolStripMenuItem
             // 
             this.selectLastInsertedNoteToolStripMenuItem.Checked = true;
             this.selectLastInsertedNoteToolStripMenuItem.CheckOnClick = true;
             this.selectLastInsertedNoteToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.selectLastInsertedNoteToolStripMenuItem.Name = "selectLastInsertedNoteToolStripMenuItem";
-            this.selectLastInsertedNoteToolStripMenuItem.Size = new System.Drawing.Size(285, 26);
+            this.selectLastInsertedNoteToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
             this.selectLastInsertedNoteToolStripMenuItem.Text = "Select Last Inserted Note";
             // 
             // chartToolStripMenuItem
@@ -1091,7 +1093,7 @@
             this.gimmickBeatLabel.AutoSize = true;
             this.gimmickBeatLabel.Location = new System.Drawing.Point(173, 47);
             this.gimmickBeatLabel.Name = "gimmickBeatLabel";
-            this.gimmickBeatLabel.Size = new System.Drawing.Size(36, 15);
+            this.gimmickBeatLabel.Size = new System.Drawing.Size(39, 15);
             this.gimmickBeatLabel.TabIndex = 9;
             this.gimmickBeatLabel.Text = "None";
             // 
@@ -1100,7 +1102,7 @@
             this.gimmickValueLabel.AutoSize = true;
             this.gimmickValueLabel.Location = new System.Drawing.Point(76, 89);
             this.gimmickValueLabel.Name = "gimmickValueLabel";
-            this.gimmickValueLabel.Size = new System.Drawing.Size(36, 15);
+            this.gimmickValueLabel.Size = new System.Drawing.Size(39, 15);
             this.gimmickValueLabel.TabIndex = 8;
             this.gimmickValueLabel.Text = "None";
             // 
@@ -1109,7 +1111,7 @@
             this.gimmickTypeLabel.AutoSize = true;
             this.gimmickTypeLabel.Location = new System.Drawing.Point(76, 68);
             this.gimmickTypeLabel.Name = "gimmickTypeLabel";
-            this.gimmickTypeLabel.Size = new System.Drawing.Size(36, 15);
+            this.gimmickTypeLabel.Size = new System.Drawing.Size(39, 15);
             this.gimmickTypeLabel.TabIndex = 7;
             this.gimmickTypeLabel.Text = "None";
             // 
@@ -1118,7 +1120,7 @@
             this.gimmickMeasureLabel.AutoSize = true;
             this.gimmickMeasureLabel.Location = new System.Drawing.Point(76, 47);
             this.gimmickMeasureLabel.Name = "gimmickMeasureLabel";
-            this.gimmickMeasureLabel.Size = new System.Drawing.Size(36, 15);
+            this.gimmickMeasureLabel.Size = new System.Drawing.Size(39, 15);
             this.gimmickMeasureLabel.TabIndex = 6;
             this.gimmickMeasureLabel.Text = "None";
             // 
@@ -1215,7 +1217,7 @@
             this.noteMaskLabel.AutoSize = true;
             this.noteMaskLabel.Location = new System.Drawing.Point(173, 139);
             this.noteMaskLabel.Name = "noteMaskLabel";
-            this.noteMaskLabel.Size = new System.Drawing.Size(29, 15);
+            this.noteMaskLabel.Size = new System.Drawing.Size(30, 15);
             this.noteMaskLabel.TabIndex = 17;
             this.noteMaskLabel.Text = "N/A";
             // 
@@ -1234,7 +1236,7 @@
             this.noteSizeLabel.AutoSize = true;
             this.noteSizeLabel.Location = new System.Drawing.Point(173, 118);
             this.noteSizeLabel.Name = "noteSizeLabel";
-            this.noteSizeLabel.Size = new System.Drawing.Size(36, 15);
+            this.noteSizeLabel.Size = new System.Drawing.Size(39, 15);
             this.noteSizeLabel.TabIndex = 15;
             this.noteSizeLabel.Text = "None";
             // 
@@ -1294,7 +1296,7 @@
             this.noteBeatLabel.AutoSize = true;
             this.noteBeatLabel.Location = new System.Drawing.Point(173, 76);
             this.noteBeatLabel.Name = "noteBeatLabel";
-            this.noteBeatLabel.Size = new System.Drawing.Size(36, 15);
+            this.noteBeatLabel.Size = new System.Drawing.Size(39, 15);
             this.noteBeatLabel.TabIndex = 9;
             this.noteBeatLabel.Text = "None";
             // 
@@ -1303,7 +1305,7 @@
             this.notePositionLabel.AutoSize = true;
             this.notePositionLabel.Location = new System.Drawing.Point(76, 118);
             this.notePositionLabel.Name = "notePositionLabel";
-            this.notePositionLabel.Size = new System.Drawing.Size(36, 15);
+            this.notePositionLabel.Size = new System.Drawing.Size(39, 15);
             this.notePositionLabel.TabIndex = 8;
             this.notePositionLabel.Text = "None";
             // 
@@ -1312,7 +1314,7 @@
             this.noteTypeLabel.AutoSize = true;
             this.noteTypeLabel.Location = new System.Drawing.Point(76, 97);
             this.noteTypeLabel.Name = "noteTypeLabel";
-            this.noteTypeLabel.Size = new System.Drawing.Size(36, 15);
+            this.noteTypeLabel.Size = new System.Drawing.Size(39, 15);
             this.noteTypeLabel.TabIndex = 7;
             this.noteTypeLabel.Text = "None";
             // 
@@ -1321,7 +1323,7 @@
             this.noteMeasureLabel.AutoSize = true;
             this.noteMeasureLabel.Location = new System.Drawing.Point(76, 76);
             this.noteMeasureLabel.Name = "noteMeasureLabel";
-            this.noteMeasureLabel.Size = new System.Drawing.Size(36, 15);
+            this.noteMeasureLabel.Size = new System.Drawing.Size(39, 15);
             this.noteMeasureLabel.TabIndex = 6;
             this.noteMeasureLabel.Text = "None";
             // 
@@ -1389,12 +1391,24 @@
             // 
             this.autoSaveTimer.Tick += new System.EventHandler(this.autoSaveTimer_Tick);
             // 
+            // skCirclePanel
+            // 
+            this.skCirclePanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.skCirclePanel.Location = new System.Drawing.Point(257, 40);
+            this.skCirclePanel.Name = "skCirclePanel";
+            this.skCirclePanel.Size = new System.Drawing.Size(611, 524);
+            this.skCirclePanel.TabIndex = 2;
+            this.skCirclePanel.Text = "skCirclePanel";
+            this.skCirclePanel.PaintSurface += new System.EventHandler<SkiaSharp.Views.Desktop.SKPaintSurfaceEventArgs>(this.skCirclePanel_PaintSurface);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDark;
             this.ClientSize = new System.Drawing.Size(1142, 787);
+            this.Controls.Add(this.skCirclePanel);
             this.Controls.Add(this.noteViewGroupBox);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.insertButton);
@@ -1409,7 +1423,7 @@
             this.Controls.Add(this.menuStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip;
-            this.MinimumSize = new System.Drawing.Size(1154, 812);
+            this.MinimumSize = new System.Drawing.Size(1154, 810);
             this.Name = "MainForm";
             this.Text = "BAKKA Editor - [New File]";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
@@ -1561,5 +1575,6 @@
         private TrackBar trackBarVolume;
         private Label labelSpeed;
         private TrackBar trackBarSpeed;
+        private SkiaSharp.Views.Desktop.SKControl skCirclePanel;
     }
 }
