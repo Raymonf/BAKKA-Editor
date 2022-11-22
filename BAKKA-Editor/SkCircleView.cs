@@ -223,7 +223,6 @@ namespace BAKKA_Editor
         private void FillPie(SKPaint paint, SKRect rect, float startAngle, float sweepAngle)
         {
             var path = new SKPath();
-            path.FillType = SKPathFillType.EvenOdd;
             path.AddArc(rect, startAngle, sweepAngle);
             canvas.DrawPath(path, paint);
         }

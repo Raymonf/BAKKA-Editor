@@ -758,7 +758,7 @@
             // 
             this.labelSpeed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.labelSpeed.AutoSize = true;
-            this.labelSpeed.Location = new System.Drawing.Point(-157, 65);
+            this.labelSpeed.Location = new System.Drawing.Point(371, 70);
             this.labelSpeed.Name = "labelSpeed";
             this.labelSpeed.Size = new System.Drawing.Size(104, 19);
             this.labelSpeed.TabIndex = 36;
@@ -768,7 +768,7 @@
             // 
             this.trackBarSpeed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.trackBarSpeed.LargeChange = 1;
-            this.trackBarSpeed.Location = new System.Drawing.Point(-53, 66);
+            this.trackBarSpeed.Location = new System.Drawing.Point(481, 65);
             this.trackBarSpeed.Maximum = 4;
             this.trackBarSpeed.Minimum = 1;
             this.trackBarSpeed.Name = "trackBarSpeed";
@@ -780,7 +780,7 @@
             // trackBarVolume
             // 
             this.trackBarVolume.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackBarVolume.Location = new System.Drawing.Point(199, 65);
+            this.trackBarVolume.Location = new System.Drawing.Point(746, 67);
             this.trackBarVolume.Maximum = 100;
             this.trackBarVolume.Name = "trackBarVolume";
             this.trackBarVolume.Size = new System.Drawing.Size(176, 56);
@@ -794,7 +794,7 @@
             // 
             this.labelVolume.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.labelVolume.AutoSize = true;
-            this.labelVolume.Location = new System.Drawing.Point(134, 65);
+            this.labelVolume.Location = new System.Drawing.Point(681, 67);
             this.labelVolume.Name = "labelVolume";
             this.labelVolume.Size = new System.Drawing.Size(63, 19);
             this.labelVolume.TabIndex = 0;
@@ -818,7 +818,7 @@
             this.songTrackBar.Location = new System.Drawing.Point(126, 28);
             this.songTrackBar.Margin = new System.Windows.Forms.Padding(4);
             this.songTrackBar.Name = "songTrackBar";
-            this.songTrackBar.Size = new System.Drawing.Size(249, 56);
+            this.songTrackBar.Size = new System.Drawing.Size(796, 56);
             this.songTrackBar.TabIndex = 2;
             this.songTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
             this.songTrackBar.ValueChanged += new System.EventHandler(this.songTrackBar_ValueChanged);
@@ -1469,12 +1469,13 @@
             // 
             this.skCirclePanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.skCirclePanel.BackColor = System.Drawing.Color.Black;
             this.skCirclePanel.Location = new System.Drawing.Point(330, 51);
-            this.skCirclePanel.Margin = new System.Windows.Forms.Padding(4);
+            this.skCirclePanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.skCirclePanel.Name = "skCirclePanel";
             this.skCirclePanel.Size = new System.Drawing.Size(786, 664);
             this.skCirclePanel.TabIndex = 2;
-            this.skCirclePanel.Text = "skCirclePanel";
+            this.skCirclePanel.VSync = true;
             this.skCirclePanel.PaintSurface += new System.EventHandler<SkiaSharp.Views.Desktop.SKPaintGLSurfaceEventArgs>(this.skCirclePanel_PaintSurface);
             this.skCirclePanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.skCirclePanel_MouseDown);
             this.skCirclePanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.skCirclePanel_MouseMove);
