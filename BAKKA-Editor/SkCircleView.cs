@@ -92,48 +92,12 @@ namespace BAKKA_Editor
             CenterPoint = new PointF(TopCorner.X + Radius, TopCorner.Y + Radius);
 
             // Pens
-            BeatPen = new SKPaint()
-            {
-                IsAntialias = true,
-                Color = SKColors.White,
-                Style = SKPaintStyle.Stroke,
-                StrokeWidth = PanelSize.Width * 1.0f / 600.0f
-            };
-            TickMinorPen = new SKPaint()
-            {
-                IsAntialias = true,
-                Color = SKColors.Black,
-                Style = SKPaintStyle.Stroke,
-                StrokeWidth = PanelSize.Width * 2.0f / 600.0f
-            };
-            TickMediumPen = new SKPaint()
-            {
-                IsAntialias = true,
-                Color = SKColors.Black,
-                Style = SKPaintStyle.Stroke,
-                StrokeWidth = PanelSize.Width * 4.0f / 600.0f
-            };
-            TickMajorPen = new SKPaint()
-            {
-                IsAntialias = true,
-                Color = SKColors.Black,
-                Style = SKPaintStyle.Stroke,
-                StrokeWidth = PanelSize.Width * 7.0f / 600.0f
-            };
-            HighlightPen = new SKPaint()
-            {
-                IsAntialias = true,
-                Color = Color.LightPink.ToSKColor().WithAlpha((byte)SelectTransparency),
-                Style = SKPaintStyle.Stroke,
-                StrokeWidth = PanelSize.Width * 8.0f / 600.0f
-            };
-            FlairPen = new SKPaint()
-            {
-                IsAntialias = true,
-                Color = SKColors.Yellow.WithAlpha((byte)FlairTransparency),
-                Style = SKPaintStyle.Stroke,
-                StrokeWidth = PanelSize.Width * 8.0f / 600.0f
-            };
+            BeatPen = Utils.CreateStrokeBrush(SKColors.White, PanelSize.Width * 1.0f / 600.0f);
+            TickMinorPen = Utils.CreateStrokeBrush(SKColors.Black, PanelSize.Width * 2.0f / 600.0f);
+            TickMediumPen = Utils.CreateStrokeBrush(SKColors.Black, PanelSize.Width * 4.0f / 600.0f);
+            TickMajorPen = Utils.CreateStrokeBrush(SKColors.Black, PanelSize.Width * 7.0f / 600.0f);
+            HighlightPen = Utils.CreateStrokeBrush(SKColors.LightPink.WithAlpha((byte)SelectTransparency), PanelSize.Width * 8.0f / 600.0f);
+            FlairPen = Utils.CreateStrokeBrush(SKColors.Yellow.WithAlpha((byte)FlairTransparency), PanelSize.Width * 8.0f / 600.0f);
         }
 
 
@@ -225,6 +189,18 @@ namespace BAKKA_Editor
             var path = new SKPath();
             path.AddArc(rect, startAngle, sweepAngle);
             canvas.DrawPath(path, paint);
+        }
+
+        /// <summary>
+        /// Creates the background brush with the passed in color if it's null.
+        /// </summary>
+        /// <param name="color">SKColor</param>
+        public void DrawBackground(SKColor color)
+        {
+            if (BackgroundBrush == null)
+                // Remember background color for drawing later
+                BackgroundBrush = Utils.CreateFillBrush(color);
+            canvas.Clear(color);
         }
 
         public void DrawMasks(Chart chart)

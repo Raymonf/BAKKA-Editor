@@ -1871,7 +1871,7 @@ namespace BAKKA_Editor
         {
             skCircleView.SetCanvas(e.Surface.Canvas);
 
-            e.Surface.Canvas.Clear(BackColor.ToSKColor());
+            skCircleView.DrawBackground(BackColor.ToSKColor());
 
             // Draw masks
             skCircleView.DrawMasks(chart);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SkiaSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -196,6 +197,27 @@ namespace BAKKA_Editor
         internal static void AppendHotkey(this Button button, int key)
         {
             button.Text += $" ({KeyIntToString(key)})";
+        }
+
+        internal static SKPaint CreateStrokeBrush(SKColor color, float strokeWidth)
+        {
+            return new SKPaint()
+            {
+                IsAntialias = true,
+                Color = color,
+                Style = SKPaintStyle.Stroke,
+                StrokeWidth = strokeWidth
+            };
+        }
+
+        internal static SKPaint CreateFillBrush(SKColor color)
+        {
+            return new SKPaint()
+            {
+                IsAntialias = true,
+                Color = color,
+                Style = SKPaintStyle.Fill
+            };
         }
     }
 }
